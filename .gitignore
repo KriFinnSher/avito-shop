@@ -1,0 +1,4 @@
+.env
+/internal/config/config.yaml
+*.xml
+*iml
