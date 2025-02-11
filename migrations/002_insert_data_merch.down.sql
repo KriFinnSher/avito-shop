@@ -1,0 +1,1 @@
+DELETE FROM Merch WHERE name IN ('pink-hoody', 'wallet', 'socks', 'umbrella', 'hoody', 'powerbank', 'book', 'cup', 't-shirt')

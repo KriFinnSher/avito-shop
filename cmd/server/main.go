@@ -1,58 +1,57 @@
 package main
 
 import (
-	"database/sql"
+	"avito-shop/internal/config"
+	"avito-shop/internal/db"
+	//"avito-shop/internal/handlers"
+	"errors"
 	"fmt"
-	"log"
+	"github.com/jmoiron/sqlx"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	"log/slog"
 	"net/http"
-	"os"
-
-	_ "github.com/lib/pq"
 )
 
-var db *sql.DB
-
-func initDB() {
-	var err error
-	connStr := "postgres://" + getEnv("DATABASE_USER", "postgres") + ":" + getEnv("DATABASE_PASSWORD", "password") + "@" + getEnv("DATABASE_HOST", "localhost") + ":" + getEnv("DATABASE_PORT", "5432") + "/" + getEnv("DATABASE_NAME", "testdb") + "?sslmode=disable"
-	db, err = sql.Open("postgres", connStr)
-	if err != nil {
-		log.Fatal("Ошибка подключения к базе данных: ", err)
-	}
-
-	err = db.Ping()
-	if err != nil {
-		log.Fatal("Ошибка пинга базы данных: ", err)
-	}
-
-	fmt.Println("Успешное подключение к базе данных!")
-}
-
-func getEnv(key, defaultValue string) string {
-	value := os.Getenv(key)
-	if value == "" {
-		return defaultValue
-	}
-	return value
-}
-
-func handler(w http.ResponseWriter, r *http.Request) {
-	var result string
-	err := db.QueryRow("SELECT 'Hello, world!'").Scan(&result)
-	if err != nil {
-		http.Error(w, "Ошибка выполнения запроса к базе данных: "+err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	fmt.Fprintf(w, result)
-}
-
 func main() {
-	initDB()
-	defer db.Close()
+	config.SetUpConfig()
+	postgresDb := db.InitDb("postgres")
+	db.MakeMigrations()
 
-	http.HandleFunc("/", handler)
+	e := echo.New()
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
 
-	fmt.Println("Сервер запущен на порту 8080...")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	//e.POST("/api/auth", handlers.Auth)
+	//e.GET("/api/info", handlers.GetInfo)
+	//e.GET("/api/buy/:item", handlers.BuyItem)
+	//e.POST("/api/sendCoin", handlers.SendCoins)
+	e.GET("/api/test", SelectHandler(postgresDb))
+
+	if err := e.Start(":8080"); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		slog.Error("failed to start server", "error", err)
+	}
+
+}
+
+type price uint64
+
+type Item struct {
+	Id   uint64 `db:"id" json:"id"`
+	Name string `db:"name" json:"name"`
+	Cost price  `db:"cost" json:"cost"`
+}
+
+func SelectAll(db *sqlx.DB) []Item {
+	var items []Item
+	db.Select(&items, "SELECT * FROM merch")
+	return items
+}
+
+func SelectHandler(db *sqlx.DB) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		items := SelectAll(db)
+		fmt.Println(items)
+		return nil
+	}
 }
