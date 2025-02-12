@@ -27,7 +27,7 @@ func InitDb(driverName string) *sqlx.DB {
 	return db
 }
 
-func MakeMigrations() {
+func MakeMigrations(up bool) {
 	dbLine := fmt.Sprintf("postgres://%s:%s@db:%s/%s?sslmode=disable",
 		config.AppConfig.Db.User,
 		config.AppConfig.Db.Pass,
@@ -39,8 +39,17 @@ func MakeMigrations() {
 		log.Fatalf("Error creating migration: %v", err)
 	}
 
-	err = m.Up() // или m.Down() для отката
-	if err != nil {
-		// TODO: add wrap on this error
+	if up {
+		err = m.Up()
+		if err != nil {
+			log.Fatalf("Error applying migration: %v", err)
+		}
+		log.Println("Rollback completed")
+	} else {
+		err = m.Down()
+		if err != nil {
+			log.Fatalf("Error rolling back migration: %v", err)
+		}
+		log.Println("Migration applied successfully")
 	}
 }

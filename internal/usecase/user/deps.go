@@ -7,9 +7,8 @@ import (
 )
 
 type UserRepository interface {
-	GetUser(ctx context.Context, userId uuid.UUID) (models.User, error)
+	GetUserByID(ctx context.Context, userId uuid.UUID) (models.User, error)
+	GetUserByName(ctx context.Context, name string) (models.User, error)
 	CreateUser(ctx context.Context, user models.User) error
-	GetBalance(ctx context.Context, userID uuid.UUID) (uint64, error)
-	GetHistory(ctx context.Context, userId uuid.UUID) ([]models.Transaction, error)
-	GetInventory(ctx context.Context, userId uuid.UUID) (map[models.Item]uint64, error)
+	UpdateUserBalance(ctx context.Context, userId uuid.UUID, amount int) error
 }

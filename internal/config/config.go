@@ -17,8 +17,7 @@ type Config struct {
 		Name string `mapstructure:"name"`
 	}
 	JWT struct {
-		smth1 string `mapstructure:"smth1"` // TODO: change on smth real
-		smth2 string `mapstructure:"smth1"` // TODO: change on smth real
+		SecretKey string `mapstructure:"secret_key"`
 	}
 }
 

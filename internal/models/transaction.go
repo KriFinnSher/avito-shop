@@ -6,11 +6,11 @@ import (
 )
 
 type Transaction struct {
-	Id       uuid.UUID `json:"transaction_id"`
-	UserId   uuid.UUID `json:"user_id"`
-	Type     string    `json:"type"`
-	Amount   uint64    `json:"amount"`
-	TargetId uuid.UUID `json:"target_user_id"`
-	ItemId   uuid.UUID `json:"item_id"`
-	Date     time.Time `json:"date"`
+	Id     uuid.UUID `db:"id" json:"transaction_id"`
+	From   string    `db:"from_user" json:"from_user"`
+	Type   string    `db:"type" json:"type"`
+	Amount uint64    `db:"amount" json:"amount"`
+	To     string    `db:"to_user" json:"to_user"`
+	Item   string    `db:"item" json:"item"`
+	Date   time.Time `db:"date" json:"date"`
 }
