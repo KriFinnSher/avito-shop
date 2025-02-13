@@ -42,7 +42,7 @@ func AuthHandler(ctx echo.Context) error {
 			return ctx.JSON(http.StatusInternalServerError, ErrorResponse{Message: "Failed to create user"})
 		}
 		user_ = models.User{
-			Id:      uuid.New(),
+			ID:      uuid.New(),
 			Name:    req.Username,
 			Hash:    hash,
 			Balance: 1000,

@@ -8,24 +8,11 @@ import (
 )
 
 type UserUsecase struct {
-	UserRepo user.UserRepository
+	UserRepo user.Repository
 }
 
-func NewUserUsecase(repo user.UserRepository) *UserUsecase {
+func NewUserUsecase(repo user.Repository) *UserUsecase {
 	return &UserUsecase{UserRepo: repo}
-}
-
-func (u *UserUsecase) GetInventory(ctx context.Context, userID uuid.UUID) (map[string]uint64, error) {
-	user_, err := u.UserRepo.GetUserByID(ctx, userID)
-	if err != nil {
-		return map[string]uint64{}, err // TODO: wrap this error
-	}
-	items := user_.Items
-	inventory := make(map[string]uint64)
-	for _, item := range items {
-		inventory[item.Name]++
-	}
-	return inventory, nil
 }
 
 func (u *UserUsecase) Exist(ctx context.Context, name string) (models.User, bool) {
@@ -39,7 +26,7 @@ func (u *UserUsecase) Exist(ctx context.Context, name string) (models.User, bool
 func (u *UserUsecase) UpdateBalance(ctx context.Context, userID uuid.UUID, amount uint64) error {
 	err := u.UserRepo.UpdateUserBalance(ctx, userID, int(amount))
 	if err != nil {
-		return err // TODO: wrap this error
+		return err
 	}
 	return nil
 }
@@ -47,7 +34,7 @@ func (u *UserUsecase) UpdateBalance(ctx context.Context, userID uuid.UUID, amoun
 func (u *UserUsecase) GetBalance(ctx context.Context, userID uuid.UUID) (uint64, error) {
 	user_, err := u.UserRepo.GetUserByID(ctx, userID)
 	if err != nil {
-		return 0, err // TODO: wrap this error
+		return 0, err
 	}
 	balance := user_.Balance
 	return balance, nil
@@ -56,7 +43,7 @@ func (u *UserUsecase) GetBalance(ctx context.Context, userID uuid.UUID) (uint64,
 func (u *UserUsecase) CreateUser(ctx context.Context, user_ models.User) error {
 	err := u.UserRepo.CreateUser(ctx, user_)
 	if err != nil {
-		return err // TODO: wrap this error
+		return err
 	}
 	return nil
 }

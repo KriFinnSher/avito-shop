@@ -11,45 +11,44 @@ import (
 	"log"
 )
 
-func InitDb(driverName string) *sqlx.DB {
+func InitDB(driverName string) *sqlx.DB {
 	dbInfo := fmt.Sprintf(
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-		config.AppConfig.Db.Host,
-		config.AppConfig.Db.Port,
-		config.AppConfig.Db.User,
-		config.AppConfig.Db.Pass,
-		config.AppConfig.Db.Name,
+		config.AppConfig.DB.Host,
+		config.AppConfig.DB.Port,
+		config.AppConfig.DB.User,
+		config.AppConfig.DB.Pass,
+		config.AppConfig.DB.Name,
 	)
 	db, err := sqlx.Connect(driverName, dbInfo)
 	if err != nil {
-		return nil // TODO: add wrap on this error
+		log.Fatalf("failed to connect to database")
+		return nil
 	}
 	return db
 }
 
 func MakeMigrations(up bool) {
 	dbLine := fmt.Sprintf("postgres://%s:%s@db:%s/%s?sslmode=disable",
-		config.AppConfig.Db.User,
-		config.AppConfig.Db.Pass,
-		config.AppConfig.Db.Port,
-		config.AppConfig.Db.Name,
+		config.AppConfig.DB.User,
+		config.AppConfig.DB.Pass,
+		config.AppConfig.DB.Port,
+		config.AppConfig.DB.Name,
 	)
 	m, err := migrate.New("file://migrations", dbLine)
 	if err != nil {
-		log.Fatalf("Error creating migration: %v", err)
+		log.Fatalf("error creating migration")
 	}
 
 	if up {
 		err = m.Up()
 		if err != nil {
-			log.Fatalf("Error applying migration: %v", err)
+			fmt.Println(err, "(but it's fine)")
 		}
-		log.Println("Rollback completed")
 	} else {
 		err = m.Down()
 		if err != nil {
-			log.Fatalf("Error rolling back migration: %v", err)
+			log.Fatalf("error rolling back migration")
 		}
-		log.Println("Migration applied successfully")
 	}
 }

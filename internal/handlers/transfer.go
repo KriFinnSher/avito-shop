@@ -53,12 +53,12 @@ func SendHandler(ctx echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, ErrorResponse{Message: "failed to make transaction"})
 	}
 
-	err = userUsecase.UpdateBalance(reqCtx, sender.Id, -uint64(req.Amount))
+	err = userUsecase.UpdateBalance(reqCtx, sender.ID, -uint64(req.Amount))
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, ErrorResponse{Message: "failed to update sender's balance"})
 	}
 
-	err = userUsecase.UpdateBalance(reqCtx, receiver.Id, uint64(req.Amount))
+	err = userUsecase.UpdateBalance(reqCtx, receiver.ID, uint64(req.Amount))
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, ErrorResponse{Message: "failed to update receiver's balance"})
 	}

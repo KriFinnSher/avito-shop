@@ -7,10 +7,10 @@ import (
 )
 
 type MerchUsecase struct {
-	MerchRepo merch.MerchRepository
+	MerchRepo merch.Repository
 }
 
-func NewMerchUsecase(repo merch.MerchRepository) *MerchUsecase {
+func NewMerchUsecase(repo merch.Repository) *MerchUsecase {
 	return &MerchUsecase{MerchRepo: repo}
 }
 

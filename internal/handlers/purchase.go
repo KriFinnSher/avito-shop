@@ -10,11 +10,11 @@ import (
 	"net/http"
 )
 
-func BuyItemHandler(ctx echo.Context) error {
+func BuyHandler(ctx echo.Context) error {
 	db := ctx.Request().Context().Value("db").(*sqlx.DB)
 	username, ok := ctx.Get("username").(string)
 	if !ok || username == "" {
-		return echo.NewHTTPError(http.StatusUnauthorized, "invalid token or missing username")
+		return echo.NewHTTPError(http.StatusUnauthorized, ErrorResponse{Message: "invalid token or missing username"})
 	}
 
 	itemName := ctx.Param("item")
@@ -32,26 +32,26 @@ func BuyItemHandler(ctx echo.Context) error {
 
 	sender, exist := userUsecase.Exist(reqCtx, username)
 	if !exist {
-		return echo.NewHTTPError(http.StatusUnauthorized, "user not found")
+		return echo.NewHTTPError(http.StatusUnauthorized, ErrorResponse{Message: "user not found"})
 	}
 
 	item, exist := itemUsecase.Exist(reqCtx, itemName)
 	if !exist {
-		return echo.NewHTTPError(http.StatusBadRequest, "item not found")
+		return echo.NewHTTPError(http.StatusBadRequest, ErrorResponse{Message: "item not found"})
 	}
 
 	if sender.Balance < item.Cost {
-		return echo.NewHTTPError(http.StatusBadRequest, "insufficient balance")
+		return echo.NewHTTPError(http.StatusBadRequest, ErrorResponse{Message: "insufficient balance"})
 	}
 
-	err := transactionUsecase.Purchase(reqCtx, sender, item)
+	err := transactionUsecase.Purchase(reqCtx, &sender, &item)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, ErrorResponse{Message: "failed to make transaction"})
 	}
 
-	err = userUsecase.UpdateBalance(reqCtx, sender.Id, -item.Cost)
+	err = userUsecase.UpdateBalance(reqCtx, sender.ID, -item.Cost)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, "failed to update user's balance")
+		return echo.NewHTTPError(http.StatusInternalServerError, ErrorResponse{Message: "failed to update user's balance"})
 	}
 
 	return ctx.JSON(http.StatusOK, map[string]string{"message": "item purchased successfully"})

@@ -1,27 +1,25 @@
 package handlers
 
 import (
-	"avito-shop/internal/models"
 	"avito-shop/internal/repository/transaction"
 	"avito-shop/internal/repository/user"
 	"avito-shop/internal/usecase"
-	"fmt"
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
 
-type Response struct {
-	Coins     uint64
-	Inventory map[string]uint64
-	History   []models.Transaction
+type InfoResponse struct {
+	Coins     uint64                  `json:"coins"`
+	Inventory []usecase.InventoryItem `json:"inventory"`
+	History   usecase.CoinHistory     `json:"coinHistory"`
 }
 
 func InfoHandler(ctx echo.Context) error {
 	db := ctx.Request().Context().Value("db").(*sqlx.DB)
 	username, ok := ctx.Get("username").(string)
 	if !ok || username == "" {
-		return echo.NewHTTPError(http.StatusUnauthorized, "invalid token or missing username")
+		return echo.NewHTTPError(http.StatusUnauthorized, ErrorResponse{Message: "invalid token or missing username"})
 	}
 
 	reqCtx := ctx.Request().Context()
@@ -34,26 +32,25 @@ func InfoHandler(ctx echo.Context) error {
 
 	user_, exist := userUsecase.Exist(reqCtx, username)
 	if !exist {
-		return echo.NewHTTPError(http.StatusUnauthorized, "user not found")
+		return echo.NewHTTPError(http.StatusUnauthorized, ErrorResponse{Message: "user not found"})
 	}
 
-	coins, err := userUsecase.GetBalance(reqCtx, user_.Id)
+	coins, err := userUsecase.GetBalance(reqCtx, user_.ID)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, "failed to get balance")
+		return echo.NewHTTPError(http.StatusInternalServerError, ErrorResponse{Message: "failed to get balance"})
 	}
 
-	inventory, err := userUsecase.GetInventory(reqCtx, user_.Id)
+	inventory, err := transactionUsecase.GetInventory(reqCtx, user_.Name)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, "failed to get inventory")
+		return echo.NewHTTPError(http.StatusInternalServerError, ErrorResponse{Message: "failed to get inventory"})
 	}
 
-	fmt.Println(user_.Name, "BIG BOY")
 	history, err := transactionUsecase.GetHistory(reqCtx, user_.Name)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, "failed to get history")
+		return echo.NewHTTPError(http.StatusInternalServerError, ErrorResponse{Message: "failed to get history"})
 	}
 
-	response := Response{
+	response := InfoResponse{
 		Coins:     coins,
 		Inventory: inventory,
 		History:   history,

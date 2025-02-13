@@ -6,7 +6,7 @@ import (
 )
 
 type Transaction struct {
-	Id     uuid.UUID `db:"id" json:"transaction_id"`
+	ID     uuid.UUID `db:"id" json:"transaction_id"`
 	From   string    `db:"from_user" json:"from_user"`
 	Type   string    `db:"type" json:"type"`
 	Amount uint64    `db:"amount" json:"amount"`

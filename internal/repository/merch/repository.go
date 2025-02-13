@@ -19,7 +19,7 @@ func (r *Repository) GetMerch(ctx context.Context, name string) (models.Item, er
 	item := models.Item{}
 	err := r.db.QueryRowContext(ctx, query, name).Scan(&item.Id, &item.Name, &item.Cost)
 	if err != nil {
-		return models.Item{}, err // TODO: wrap this error
+		return models.Item{}, err
 	}
 	return item, nil
 }

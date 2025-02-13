@@ -25,12 +25,11 @@ func ParseToken(tokenString string) (jwt.MapClaims, error) {
 		return []byte(config.AppConfig.JWT.SecretKey), nil
 	})
 	if err != nil {
-		fmt.Println(err)
+		return nil, err
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		return claims, nil
-	} else {
-		return nil, fmt.Errorf("invalid token")
 	}
+	return nil, err
 }

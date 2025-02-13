@@ -2,6 +2,7 @@ package config
 
 import (
 	"github.com/spf13/viper"
+	"log"
 )
 
 type Config struct {
@@ -9,7 +10,7 @@ type Config struct {
 		Host string `mapstructure:"host"`
 		Port string `mapstructure:"port"`
 	}
-	Db struct {
+	DB struct {
 		Host string `mapstructure:"host"`
 		Port string `mapstructure:"port"`
 		User string `mapstructure:"user"`
@@ -29,10 +30,10 @@ func SetUpConfig() {
 	viper.AddConfigPath("./internal/config/")
 
 	if err := viper.ReadInConfig(); err != nil {
-		// TODO: add wrap on this error
+		log.Fatalf("failed to read config")
 	}
 
 	if err := viper.Unmarshal(&AppConfig); err != nil {
-		// TODO: add wrap on this error
+		log.Fatalf("failed to unmarshal config")
 	}
 }

@@ -5,6 +5,6 @@ import (
 	"context"
 )
 
-type MerchRepository interface {
+type Repository interface {
 	GetMerch(ctx context.Context, name string) (models.Item, error)
 }

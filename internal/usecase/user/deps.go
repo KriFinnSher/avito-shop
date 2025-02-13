@@ -6,9 +6,9 @@ import (
 	"github.com/google/uuid"
 )
 
-type UserRepository interface {
-	GetUserByID(ctx context.Context, userId uuid.UUID) (models.User, error)
+type Repository interface {
+	GetUserByID(ctx context.Context, userID uuid.UUID) (models.User, error)
 	GetUserByName(ctx context.Context, name string) (models.User, error)
 	CreateUser(ctx context.Context, user models.User) error
-	UpdateUserBalance(ctx context.Context, userId uuid.UUID, amount int) error
+	UpdateUserBalance(ctx context.Context, userID uuid.UUID, amount int) error
 }
