@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"avito-shop/internal/repository/transaction"
-	"avito-shop/internal/repository/user"
+	"avito-shop/internal/repository/postgre/transaction"
+	"avito-shop/internal/repository/postgre/user"
 	"avito-shop/internal/usecase"
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
@@ -24,10 +24,10 @@ func InfoHandler(ctx echo.Context) error {
 
 	reqCtx := ctx.Request().Context()
 
-	userRepo := user.NewRepo(db)
+	userRepo := user.NewPostgreRepo(db)
 	userUsecase := usecase.NewUserUsecase(userRepo)
 
-	transactionRepo := transaction.NewRepo(db)
+	transactionRepo := transaction.NewPostgreRepo(db)
 	transactionUsecase := usecase.NewTransactionUsecase(transactionRepo)
 
 	user_, exist := userUsecase.Exist(reqCtx, username)

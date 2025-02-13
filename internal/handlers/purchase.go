@@ -1,9 +1,9 @@
 package handlers
 
 import (
-	"avito-shop/internal/repository/merch"
-	"avito-shop/internal/repository/transaction"
-	"avito-shop/internal/repository/user"
+	"avito-shop/internal/repository/postgre/merch"
+	"avito-shop/internal/repository/postgre/transaction"
+	"avito-shop/internal/repository/postgre/user"
 	"avito-shop/internal/usecase"
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
@@ -21,13 +21,13 @@ func BuyHandler(ctx echo.Context) error {
 
 	reqCtx := ctx.Request().Context()
 
-	userRepo := user.NewRepo(db)
+	userRepo := user.NewPostgreRepo(db)
 	userUsecase := usecase.NewUserUsecase(userRepo)
 
-	itemRepo := merch.NewRepo(db)
+	itemRepo := merch.NewPostgreRepo(db)
 	itemUsecase := usecase.NewMerchUsecase(itemRepo)
 
-	transactionRepo := transaction.NewRepo(db)
+	transactionRepo := transaction.NewPostgreRepo(db)
 	transactionUsecase := usecase.NewTransactionUsecase(transactionRepo)
 
 	sender, exist := userUsecase.Exist(reqCtx, username)

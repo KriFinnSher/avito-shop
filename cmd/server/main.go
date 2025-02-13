@@ -49,7 +49,8 @@ func main() {
 
 	go func() {
 		if err := e.Start(":8080"); err != nil && !errors.Is(err, http.ErrServerClosed) {
-			slog.Error("failed to start server")
+			slog.Error("failed to start server", "error", err)
+
 		}
 	}()
 
@@ -62,7 +63,7 @@ func main() {
 	defer cancel()
 
 	if err := e.Shutdown(ctx); err != nil {
-		slog.Error("failed to gracefully shut down server", err.Error())
+		slog.Error("failed to gracefully shut down server", "error", err)
 	}
 
 	slog.Info("server gracefully stopped")

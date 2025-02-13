@@ -3,7 +3,7 @@ package handlers
 import (
 	"avito-shop/internal/auth"
 	"avito-shop/internal/models"
-	"avito-shop/internal/repository/user"
+	"avito-shop/internal/repository/postgre/user"
 	"avito-shop/internal/usecase"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
@@ -32,7 +32,7 @@ func AuthHandler(ctx echo.Context) error {
 	}
 
 	reqCtx := ctx.Request().Context()
-	userRepo := user.NewRepo(db)
+	userRepo := user.NewPostgreRepo(db)
 	userUsecase := usecase.NewUserUsecase(userRepo)
 
 	user_, exist := userUsecase.Exist(reqCtx, req.Username)
