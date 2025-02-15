@@ -6,10 +6,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-type Claims struct {
-	Username string `json:"username"`
-}
-
+// GenerateToken generates and returns JWT-token with "username" claim
 func GenerateToken(username string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"username": username,
@@ -17,6 +14,7 @@ func GenerateToken(username string) (string, error) {
 	return token.SignedString([]byte(config.AppConfig.JWT.SecretKey))
 }
 
+// ParseToken parse tokenString including checking for valid and returns its claims
 func ParseToken(tokenString string) (jwt.MapClaims, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {

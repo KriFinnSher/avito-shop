@@ -4,6 +4,7 @@ import (
 	"github.com/google/uuid"
 )
 
+// Item is a representation of Avito merch
 type Item struct {
 	Id   uuid.UUID `json:"item_id"`
 	Name string    `json:"item_name"`

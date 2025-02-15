@@ -5,6 +5,7 @@ import (
 	"log"
 )
 
+// Config is used to store data from config.yaml file in convenient struct
 type Config struct {
 	Server struct {
 		Host string `mapstructure:"host"`
@@ -24,6 +25,7 @@ type Config struct {
 
 var AppConfig Config
 
+// SetUpConfig is used to set up global var for storing config data
 func SetUpConfig() {
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")

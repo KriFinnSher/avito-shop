@@ -29,14 +29,18 @@ type CoinHistory struct {
 	Sent     []sentCoin     `json:"sent"`
 }
 
+// TransactionUsecase is a struct type for an interaction
+// with business-logic layer (transactions model)
 type TransactionUsecase struct {
 	TransactionRepo transaction.Repository
 }
 
+// NewTransactionUsecase returns new [TransactionUsecase]
 func NewTransactionUsecase(repo transaction.Repository) *TransactionUsecase {
 	return &TransactionUsecase{TransactionRepo: repo}
 }
 
+// Send creates a transaction with type "transfer" if fromUser's balance is sufficient
 func (u *TransactionUsecase) Send(ctx context.Context, fromUser *models.User, toUser *models.User, amount uint64) error {
 	if amount <= 0 {
 		return errors.New("insufficient amount")
@@ -58,12 +62,11 @@ func (u *TransactionUsecase) Send(ctx context.Context, fromUser *models.User, to
 	if err != nil {
 		return err
 	}
-	fromUser.History = append(fromUser.History, transaction_)
-	toUser.History = append(toUser.History, transaction_)
 
 	return nil
 }
 
+// Purchase creates a transaction with type "purchase" if user_'s balance is sufficient
 func (u *TransactionUsecase) Purchase(ctx context.Context, user_ *models.User, item *models.Item) error {
 	if item.Cost > user_.Balance {
 		return errors.New("not enough money")
@@ -84,12 +87,12 @@ func (u *TransactionUsecase) Purchase(ctx context.Context, user_ *models.User, i
 	if err != nil {
 		return err
 	}
-	user_.History = append(user_.History, transaction_)
-	user_.Items = append(user_.Items, *item)
 
 	return nil
 }
 
+// GetHistory return [CoinHistory] struct for user with
+// defined name if he exists, empty history otherwise
 func (u *TransactionUsecase) GetHistory(ctx context.Context, name string) (CoinHistory, error) {
 	transactions, err := u.TransactionRepo.GetUserTransactions(ctx, name)
 	if err != nil {
@@ -119,6 +122,8 @@ func (u *TransactionUsecase) GetHistory(ctx context.Context, name string) (CoinH
 	return history, nil
 }
 
+// GetInventory return [InventoryItem] struct for user with
+// defined name if he exists, empty inventory otherwise
 func (u *TransactionUsecase) GetInventory(ctx context.Context, name string) ([]InventoryItem, error) {
 	purchases, err := u.TransactionRepo.GetUserPurchases(ctx, name)
 	if err != nil {

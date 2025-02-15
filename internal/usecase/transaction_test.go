@@ -66,7 +66,7 @@ func TestTransactionUsecase_Purchase(t *testing.T) {
 	ctx := context.Background()
 
 	t.Run("successful purchase", func(t *testing.T) {
-		user := &models.User{Name: "Alice", Balance: 100, Items: []models.Item{}}
+		user := &models.User{Name: "Alice", Balance: 100}
 		item := &models.Item{Name: "T-shirt", Cost: 50}
 
 		mockRepo.On("CreateTransaction", ctx, mock.Anything).Return(nil)
@@ -75,7 +75,6 @@ func TestTransactionUsecase_Purchase(t *testing.T) {
 
 		assert.NoError(t, err)
 		assert.Equal(t, uint64(50), user.Balance)
-		assert.Len(t, user.Items, 1)
 		mockRepo.AssertExpectations(t)
 	})
 

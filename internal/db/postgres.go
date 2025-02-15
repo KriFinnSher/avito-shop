@@ -11,6 +11,7 @@ import (
 	"log"
 )
 
+// InitDB initialize database with AppConfig's parameters for a defined driver
 func InitDB(driverName string) *sqlx.DB {
 	dbInfo := fmt.Sprintf(
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
@@ -28,6 +29,7 @@ func InitDB(driverName string) *sqlx.DB {
 	return db
 }
 
+// MakeMigrations use all *.up.sql files if up is true, and *.down.sql otherwise
 func MakeMigrations(up bool) {
 	dbLine := fmt.Sprintf("postgres://%s:%s@db:%s/%s?sslmode=disable",
 		config.AppConfig.DB.User,

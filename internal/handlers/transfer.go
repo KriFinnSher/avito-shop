@@ -14,6 +14,8 @@ type SendCoinRequest struct {
 	Amount int    `json:"amount"`
 }
 
+// SendHandler creates a transaction and stores it in db if both users exist
+// and balance of sender is sufficient
 func SendHandler(ctx echo.Context) error {
 	db := ctx.Request().Context().Value("db").(*sqlx.DB)
 	username, ok := ctx.Get("username").(string)

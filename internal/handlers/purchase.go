@@ -10,6 +10,8 @@ import (
 	"net/http"
 )
 
+// BuyHandler creates a transaction and stores it in db if both item and user exist
+// and balance of user is sufficient
 func BuyHandler(ctx echo.Context) error {
 	db := ctx.Request().Context().Value("db").(*sqlx.DB)
 	username, ok := ctx.Get("username").(string)

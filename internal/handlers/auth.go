@@ -24,6 +24,8 @@ type ErrorResponse struct {
 	Message string `json:"message"`
 }
 
+// AuthHandler creates and registers new user if it's his first auth request
+// and returns his personal JWT-token in any successful scenario
 func AuthHandler(ctx echo.Context) error {
 	db := ctx.Request().Context().Value("db").(*sqlx.DB)
 	var req AuthRequest
@@ -42,10 +44,9 @@ func AuthHandler(ctx echo.Context) error {
 			return ctx.JSON(http.StatusInternalServerError, ErrorResponse{Message: "Failed to create user"})
 		}
 		user_ = models.User{
-			ID:      uuid.New(),
-			Name:    req.Username,
-			Hash:    hash,
-			Balance: 1000,
+			ID:   uuid.New(),
+			Name: req.Username,
+			Hash: hash,
 		}
 		err = userUsecase.CreateUser(reqCtx, user_)
 		if err != nil {

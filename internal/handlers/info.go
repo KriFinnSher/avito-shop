@@ -15,6 +15,8 @@ type InfoResponse struct {
 	History   usecase.CoinHistory     `json:"coinHistory"`
 }
 
+// InfoHandler creates response in [InfoResponse] structure for
+// every registered user
 func InfoHandler(ctx echo.Context) error {
 	db := ctx.Request().Context().Value("db").(*sqlx.DB)
 	username, ok := ctx.Get("username").(string)

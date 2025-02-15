@@ -6,14 +6,18 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+// PostgreRepository is a struct type for an interaction
+// with infrastructure layer (transactions table)
 type PostgreRepository struct {
 	db *sqlx.DB
 }
 
+// NewPostgreRepo returns new [PostgreRepository]
 func NewPostgreRepo(db *sqlx.DB) *PostgreRepository {
 	return &PostgreRepository{db: db}
 }
 
+// CreateTransaction creates and adds transaction to db with defined values
 func (r *PostgreRepository) CreateTransaction(ctx context.Context, transaction models.Transaction) error {
 	query := `INSERT INTO transactions (id, from_user, type, amount, to_user, item, date) 
               VALUES ($1, $2, $3, $4, $5, $6, $7)`
@@ -25,6 +29,7 @@ func (r *PostgreRepository) CreateTransaction(ctx context.Context, transaction m
 	return nil
 }
 
+// GetUserTransactions returns all user's transactions if user with defined name exists, empty slice otherwise
 func (r *PostgreRepository) GetUserTransactions(_ context.Context, name string) ([]models.Transaction, error) {
 	transactions := make([]models.Transaction, 0)
 	query := `SELECT * FROM transactions WHERE from_user = $1 OR to_user = $1`
@@ -35,6 +40,7 @@ func (r *PostgreRepository) GetUserTransactions(_ context.Context, name string) 
 	return transactions, nil
 }
 
+// GetUserPurchases returns all user's purchases if user with defined name exists, empty slice otherwise
 func (r *PostgreRepository) GetUserPurchases(_ context.Context, name string) ([]models.Transaction, error) {
 	transactions := make([]models.Transaction, 0)
 	query := `SELECT * FROM transactions WHERE from_user = $1 AND type = 'purchase'`

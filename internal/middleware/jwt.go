@@ -7,6 +7,7 @@ import (
 	"strings"
 )
 
+// JwtMiddleware checks for user's JWT-token and sets "username" var in context
 func JwtMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		authHeader := c.Request().Header.Get("Authorization")

@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
+// Repository is an infrastructure layer interface for users
 type Repository interface {
 	GetUserByID(ctx context.Context, userID uuid.UUID) (models.User, error)
 	GetUserByName(ctx context.Context, name string) (models.User, error)
