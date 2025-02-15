@@ -1,0 +1,13 @@
+server:
+  host: 127.0.0.1
+  port: 8080
+
+db:
+  host: db
+  port: 5432
+  user: postgres
+  pass: 4392
+  name: shop
+
+jwt:
+  secret_key: "27b98fcb0fe941d3a61d4d6eaab5b2fe198a98ab7b431850ae1cf26d27f129c4"
