@@ -37,4 +37,4 @@ type Transaction struct {
 ![image](https://github.com/user-attachments/assets/c322e2ca-f2b6-4ba3-870f-b8a270d08f47)
 ![image](https://github.com/user-attachments/assets/9f4266a9-f180-4370-a21e-dff5f5afb9e6)
 
-
+##### P.S. ссылка на актуальное резюме: https://docs.google.com/document/d/1yMIFJuFUOdsgPmFHDqPbFUpkZMuCKYaT7JvalPXx0S0/edit?usp=sharing
